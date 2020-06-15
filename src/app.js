@@ -3,6 +3,7 @@ import { Switch, Route, NavLink, useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import "react-datepicker/dist/react-datepicker.css";
 import UserRegistrationPage from "./userregister";
+import ViewAbleForAll from "./viewableforall";
 
 function App({ apiFetchFacade, authFacade }) {
   let token = localStorage.getItem("jwtToken");
@@ -23,11 +24,13 @@ function App({ apiFetchFacade, authFacade }) {
     authFacade
       .login(user, pass)
       .then((res) => setLoggedIn(true))
-      .then((res) => updateRoles())
+      .then((res) => {
+        updateRoles();
+        history.push("/");
+      })
       .catch((res) =>
         alert("Status code : " + res.status + " Wrong username or password.")
       );
-    history.push("/");
   };
 
   function updateRoles() {
@@ -53,33 +56,39 @@ function App({ apiFetchFacade, authFacade }) {
   return (
     <div className="App">
       <Header loggedIn={loggedIn} role={role} logout={logout} />
-
       {loggedIn && role && role.includes("admin") && (
-        <Route exact path="/">
-          <Home history={history} token={token} />
-        </Route>
+        <>
+          <Route exact path="/">
+            <Home history={history} token={token} />
+          </Route>
+          <Route path="/viewableforall">
+            <ViewAbleForAll />
+          </Route>
+        </>
       )}
 
-      {loggedIn &&
-        role &&
-        !role.includes("admin") &&
-        !role.includes("support") && (
-          <Switch>
-            <Route exact path="/">
-              <Home history={history} token={token} />
-            </Route>
-            <Route>
-              <NoMatch />
-            </Route>
-          </Switch>
-        )}
+      {loggedIn && role && !role.includes("admin") && (
+        <Switch>
+          <Route exact path="/">
+            <Home history={history} token={token} />
+          </Route>
+          <Route path="/viewableforall">
+            <ViewAbleForAll />
+          </Route>
+          <Route>
+            <NoMatch />
+          </Route>
+        </Switch>
+      )}
       {role && role.includes("admin") && <></>}
-      {role && role.includes("support") && <></>}
       {!loggedIn && (
         <>
           <Switch>
             <Route exact path="/">
               <Home history={history} token={token} />
+            </Route>
+            <Route path="/viewableforall">
+              <ViewAbleForAll />
             </Route>
             <Route path="/login">
               <LogIn login={login} />
@@ -89,6 +98,10 @@ function App({ apiFetchFacade, authFacade }) {
                 apiFetchFacade={apiFetchFacade}
                 loginCallback={login}
               />
+            </Route>
+
+            <Route>
+              <NoMatch />
             </Route>
           </Switch>
         </>
@@ -131,6 +144,11 @@ function Header({ role, loggedIn, logout }) {
         <li>
           <NavLink exact activeClassName="active" to="/">
             Home
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/viewableforall">
+            Test Api
           </NavLink>
         </li>
         {loggedIn && (
@@ -188,11 +206,6 @@ function Home(props) {
       {role && role.includes("admin") && (
         <div>
           <h2>Admin page</h2>
-        </div>
-      )}
-      {role && role.includes("support") && (
-        <div>
-          <h2>Support page</h2>
         </div>
       )}
       {role !== "" && !role.includes("admin") && (

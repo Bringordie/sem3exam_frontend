@@ -20,3 +20,10 @@ export function ChangePWURL() {
   }
   return "http://localhost:8080/sem3/api/register/changepw";
 }
+
+export function FetchNoAccessReq() {
+  if (PROD) {
+    return "https://cphfb.codes/sem3/api/movie-info";
+  }
+  return "http://localhost:8080/sem3/api/movie-info";
+}
