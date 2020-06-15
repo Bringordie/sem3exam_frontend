@@ -27,3 +27,17 @@ export function FetchNoAccessReq() {
   }
   return "http://localhost:8080/sem3/api/movie-info";
 }
+
+export function FetchMovieInfoRatings() {
+  if (PROD) {
+    return "https://cphfb.codes/sem3/api/movie-Info-all-ratings";
+  }
+  return "http://localhost:8080/sem3/api/movie-Info-all-ratings";
+}
+
+export function FetchMovieCount() {
+  if (PROD) {
+    return "https://cphfb.codes/sem3/api/movie-count";
+  }
+  return "http://localhost:8080/sem3/api/movie-count";
+}

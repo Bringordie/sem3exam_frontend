@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { FetchNoAccessReq } from "./settings";
+import { FetchMovieInfoRatings } from "./settings";
 import apiFetchFacade from "./apiFacade";
 
-function ViewAbleForAll() {
+function MoviesForUsers() {
   let blankTitle = "";
   const [title, setTitle] = useState(blankTitle);
   const [response, setResponse] = useState("");
   const [movies, setMovies] = useState();
 
   function submitHandler(event) {
-    const url = FetchNoAccessReq() + "/" + title;
+    const url = FetchMovieInfoRatings() + "/" + title;
     apiFetchFacade()
       .getApiFetch(url)
       .then((data) => {
@@ -61,7 +61,7 @@ function ViewAbleForAll() {
                 </tr>
               </thead>
               <tbody>
-                <DisplayMovies
+                <DisplayMoviesDetails
                   title={movies.title}
                   year={movies.year}
                   plot={movies.plot}
@@ -71,6 +71,27 @@ function ViewAbleForAll() {
                   poster={movies.poster}
                 />
               </tbody>
+              <>
+                <thead>
+                  <tr>
+                    <th>Rating</th>
+                    <th>RottenTomatoes</th>
+                    <th>IMDB</th>
+                    <th>MetaCritics</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <DisplayMoviesRating
+                    tomaCriticsRating={movies.tomatoesCriticRating}
+                    tomaCriticsRatingNum={movies.tomatoesCriticRatingNum}
+                    tomaViewerRating={movies.tomatoesViewerRating}
+                    tomaViewerRatingNum={movies.tomatoesViewerRatingNum}
+                    imdbRating={movies.imdbRating}
+                    imdbVotes={movies.imdbVotes}
+                    metacriticsRating={movies.metacriticsRating}
+                  />
+                </tbody>
+              </>
             </table>
           </div>
         )}
@@ -79,7 +100,7 @@ function ViewAbleForAll() {
   );
 }
 
-function DisplayMovies(movies) {
+function DisplayMoviesDetails(movies) {
   return (
     <tr key="">
       <td>{movies.title}</td>
@@ -101,4 +122,27 @@ function DisplayMovies(movies) {
   );
 }
 
-export default ViewAbleForAll;
+function DisplayMoviesRating(movies) {
+  return (
+    <tr key="">
+      <td></td>
+      <td>
+        Critics Rating: {movies.tomaCriticsRating}
+        <br></br>
+        Votes: {movies.tomaCriticsRatingNum}
+        <br></br>
+        Viewer Rating: {movies.tomaViewerRating}
+        <br></br>
+        Votes: {movies.tomaViewerRatingNum}
+      </td>
+      <td>
+        Rating: {movies.imdbRating}
+        <br></br>
+        Votes: {movies.imdbVotes}
+      </td>
+      <td>Rating: {movies.metacriticsRating}</td>
+    </tr>
+  );
+}
+
+export default MoviesForUsers;

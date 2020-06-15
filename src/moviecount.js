@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { FetchNoAccessReq } from "./settings";
+import { FetchMovieCount } from "./settings";
 import apiFetchFacade from "./apiFacade";
+import uuid from "uuid";
 
-function ViewAbleForAll() {
+function MovieCount() {
   let blankTitle = "";
   const [title, setTitle] = useState(blankTitle);
   const [response, setResponse] = useState("");
   const [movies, setMovies] = useState();
 
   function submitHandler(event) {
-    const url = FetchNoAccessReq() + "/" + title;
+    const url = FetchMovieCount() + "/" + title;
     apiFetchFacade()
       .getApiFetch(url)
       .then((data) => {
@@ -53,23 +54,20 @@ function ViewAbleForAll() {
                 <tr>
                   <th>Title</th>
                   <th>Year</th>
-                  <th>Plot</th>
-                  <th>Directors</th>
-                  <th>Genres</th>
-                  <th>Cast</th>
-                  <th>Poster</th>
+                  <th>Last Updated</th>
+                  <th>Number of Searches</th>
                 </tr>
               </thead>
               <tbody>
-                <DisplayMovies
-                  title={movies.title}
-                  year={movies.year}
-                  plot={movies.plot}
-                  directors={movies.directors}
-                  genres={movies.genres}
-                  cast={movies.cast}
-                  poster={movies.poster}
-                />
+                {movies.map((movie) => (
+                  <DisplayMovieCount
+                    key={uuid()}
+                    title={movie.title}
+                    year={movie.year}
+                    updated={movie.updated}
+                    searches={movie.numberOfSearches}
+                  />
+                ))}
               </tbody>
             </table>
           </div>
@@ -79,26 +77,15 @@ function ViewAbleForAll() {
   );
 }
 
-function DisplayMovies(movies) {
+function DisplayMovieCount(movies) {
   return (
-    <tr key="">
+    <tr>
       <td>{movies.title}</td>
       <td>{movies.year}</td>
-      <td>{movies.plot}</td>
-      <td>{movies.directors}</td>
-      <td>{movies.genres}</td>
-      <td>{movies.cast}</td>
-      <td>
-        <img
-          className="smallhotelpicture"
-          src={movies.poster}
-          alt=""
-          height="150"
-          width="150"
-        ></img>
-      </td>
+      <td>{movies.updated}</td>
+      <td>{movies.searches}</td>
     </tr>
   );
 }
 
-export default ViewAbleForAll;
+export default MovieCount;

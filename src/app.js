@@ -4,6 +4,8 @@ import jwt_decode from "jwt-decode";
 import "react-datepicker/dist/react-datepicker.css";
 import UserRegistrationPage from "./userregister";
 import ViewAbleForAll from "./viewableforall";
+import MoviesForUsers from "./moviesforusers";
+import MovieCount from "./moviecount";
 
 function App({ apiFetchFacade, authFacade }) {
   let token = localStorage.getItem("jwtToken");
@@ -67,7 +69,7 @@ function App({ apiFetchFacade, authFacade }) {
         </>
       )}
 
-      {loggedIn && role && !role.includes("admin") && (
+      {loggedIn && role && role.includes("user") && (
         <Switch>
           <Route exact path="/">
             <Home history={history} token={token} />
@@ -75,12 +77,19 @@ function App({ apiFetchFacade, authFacade }) {
           <Route path="/viewableforall">
             <ViewAbleForAll />
           </Route>
+          <Route path="/moviesforusers">
+            <MoviesForUsers />
+          </Route>
           <Route>
             <NoMatch />
           </Route>
         </Switch>
       )}
-      {role && role.includes("admin") && <></>}
+      {role && role.includes("admin") && (
+        <Route path="/moviecount">
+          <MovieCount />
+        </Route>
+      )}
       {!loggedIn && (
         <>
           <Switch>
@@ -90,6 +99,7 @@ function App({ apiFetchFacade, authFacade }) {
             <Route path="/viewableforall">
               <ViewAbleForAll />
             </Route>
+
             <Route path="/login">
               <LogIn login={login} />
             </Route>
@@ -151,6 +161,24 @@ function Header({ role, loggedIn, logout }) {
             Test Api
           </NavLink>
         </li>
+        {role !== null && role && role.includes("user") && (
+          <>
+            <li>
+              <NavLink activeClassName="active" to="/moviesforusers">
+                Movies For Users
+              </NavLink>
+            </li>
+          </>
+        )}
+        {role && role.includes("admin") && (
+          <>
+            <li>
+              <NavLink activeClassName="active" to="/moviecount">
+                Movies With Count
+              </NavLink>
+            </li>
+          </>
+        )}
         {loggedIn && (
           <li>
             <NavLink activeClassName="active" onClick={logout} to="/login">
